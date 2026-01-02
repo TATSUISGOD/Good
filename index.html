@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>loading...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  touch-action: none;
+}
+
+video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  background: black;
+}
+
+#lock {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+</style>
+</head>
+<body>
+
+<!-- 無音で即再生（逃げ場なし） -->
+<video id="v" autoplay muted playsinline preload="auto">
+  <source src="scary.mp4" type="video/mp4">
+</video>
+
+<!-- 全画面操作ロック -->
+<div id="lock"></div>
+
+<script>
+const v = document.getElementById("v");
+const lock = document.getElementById("lock");
+
+// 戻る・更新・離脱阻止
+history.pushState(null, null, location.href);
+window.addEventListener("popstate", () => {
+  history.pushState(null, null, location.href);
+});
+
+// 画面のどこを触っても即発動
+lock.addEventListener("touchstart", start, { once: true });
+lock.addEventListener("click", start, { once: true });
+
+function start() {
+  v.muted = false;
+  v.volume = 1.0; // 最大
+  v.requestFullscreen?.();
+  v.play();
+  lock.remove();
+}
+</script>
+
+</body>
+</html>
